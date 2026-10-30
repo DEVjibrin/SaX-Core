@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>sax_agent</name>
+  <version>1.0.0</version>
+  <description>
+    Edge daemon for autonomous mobile robots. Voxelizes 3D LiDAR into compact SX1 vector strings
+    (under 1 Mbps) and streams them to the sax-bridge cloud relay, with E-stop and trajectory commands.
+  </description>
+  <maintainer email="robotics@sax.example">SaX Robotics</maintainer>
+  <license>Proprietary</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>python3-websockets</exec_depend>
+
+  <!--
+    ixwebsocket has no rosdep key. Install it separately (sudo apt install libixwebsocket-dev, or build it
+    from https://github.com/machinezone/IXWebSocket); CMakeLists.txt reports a clear error if it is missing.
+  -->
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

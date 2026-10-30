@@ -1,0 +1,37 @@
+# Parameters for the sax_agent node. Load with:
+#   ros2 run sax_agent agent_node --ros-args --params-file config/sax_agent.yaml
+sax_agent:
+  ros__parameters:
+    # Identity and bridge connection
+    robot_id: "robot_01"                  # 1-32 characters of [A-Za-z0-9_-]
+    bridge_url: "ws://localhost:8000"     # "/ws/agent/<robot_id>" is appended unless the URL already has it
+    bridge_token: ""                      # sent as "Authorization: Bearer <token>" when set
+    compress: true                        # WebSocket permessage-deflate; SX1 text compresses roughly 3-5x
+    reconnect_min_ms: 500                 # exponential backoff with jitter between these bounds
+    reconnect_max_ms: 30000
+
+    # Topics
+    cloud_topic: "/point_cloud"           # sensor_msgs/PointCloud2, float32 x, y, z
+    odom_topic: "/odom"                   # nav_msgs/Odometry
+    incident_topic: "/sax/incident"       # std_msgs/UInt8: 1 path blocked, 2 wheel slip, 3 localization lost, 0 clear
+    estop_topic: "/sax/estop"             # std_msgs/Bool, latched. Feed it to twist_mux as a lock.
+    recovery_path_topic: "/sax/recovery_path"  # nav_msgs/Path from operator SXP commands
+    estop_twist_topic: ""                 # optional: publish zero Twist at 20 Hz here while an E-stop is latched
+    persist_estop: true                   # keep a latched E-stop across agent restarts (respawn, crash, reboot)
+    estop_latch_dir: "/var/tmp"           # holds sax_agent_<robot_id>.estop while latched; release via ~/release_estop
+
+    # Streaming
+    frequency_hz: 10.0
+    max_bandwidth_kbps: 900.0             # SX1 payload budget before compression; nearest voxels are kept first
+    cloud_timeout_s: 0.5                  # an older cloud is reported as an empty point cloud
+    odom_timeout_s: 1.0                   # older odometry is reported as stuck (localization lost)
+
+    # Voxelization
+    voxel_size_m: 0.20
+    min_range_m: 0.30
+    max_range_m: 8.0
+    min_z_m: -0.30                        # world-frame height window
+    max_z_m: 2.50
+    min_points_per_voxel: 2
+    max_voxels: 1500
+    point_stride: 1                       # use every Nth point of the cloud to save CPU
